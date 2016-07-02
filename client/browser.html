@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>EchoLoJS Proof of Concept</title>
+    <link rel="stylesheet" type="text/css" href="./browser.css">
+  </head>
+
+  <body id="whole-body">
+    <h1>imitor</h1>
+    <h2 id="nonce-container"></h2>
+    <section class="container">
+      <div id="cube" transform="translateZ(-100px) rotateX(0deg) rotateY(0deg)">
+        <figure class="front">1</figure>
+        <figure class="back">2</figure>
+        <figure class="right">3</figure>
+        <figure class="left">4</figure>
+        <figure class="top">5</figure>
+        <figure class="bottom">6</figure>
+      </div>
+    </section>
+    <table>
+      <tr>
+        <td>alpha</td>
+        <td id="alpha-angle"></td>        
+      </tr>
+      <tr>
+        <td>beta</td>
+        <td id="beta-angle"></td> 
+      </tr>
+        <tr>
+          <td>gamma</td>
+          <td id="gamma-angle"></td> 
+      </tr>
+    </table>
+  </body>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script src="./dist/imperio.min.js"></script>
+  <script src="./browser.js"></script>
+</html>
