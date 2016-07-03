@@ -7,6 +7,9 @@ imperio.desktopRoomSetup(imperio.socket, imperio.room);
 let alphaAvg = 0;
 let betaAvg = 0;
 let gammaAvg = 0;
+let alphaDiff = 0;
+let betaDiff = 0;
+let gammaDiff = 0;
 
 let alphaDataArray = [0, 0, 0];
 let betaDataArray = [0, 0, 0];
@@ -28,7 +31,6 @@ function calculateRunningAverage(gyroscopeDataObject) {
 // Instantiate acceleration handler
 imperio.desktopGyroHandler(imperio.socket, calculateRunningAverage);
 
-let counter = 0;
 const alphaElement = document.getElementById('alpha-angle');
 const betaElement = document.getElementById('beta-angle');
 const gammaElement = document.getElementById('gamma-angle');
@@ -37,20 +39,21 @@ const cube = document.getElementById('cube');
 
 // Removes and adds one data point to each dataset in the chart
 function addData() {
-  counter++;
-  if (counter % 20 === 0) {
-    bodyElement.style['background-color'] = 'yellow';
-  }
-  if (counter % 40 === 0) {
-    bodyElement.style['background-color'] = 'yellow';
-    counter = 0;
-  }
-  cube.style.transform = `translateZ(-100px) rotateX(${gammaAvg}deg) rotateY(${alphaAvg}deg) rotateZ(${betaAvg}deg)`;
+  cube.style.transform = `translateZ(-100px) rotateX(${gammaAvg + gammaDiff}deg) rotateY(${alphaAvg + alphaDiff}deg) rotateZ(${betaAvg + betaDiff}deg)`;
   // $('#cube').css('transform', `translateZ(-100px) rotateZ(${counter}deg)`);
-  alphaElement.innerHTML = `${alphaAvg}`;
-  betaElement.innerHTML = `${betaAvg}`;
-  gammaElement.innerHTML = `${gammaAvg}`;
+  alphaElement.innerHTML = `${alphaAvg + alphaDiff}`;
+  betaElement.innerHTML = `${betaAvg + betaDiff}`;
+  gammaElement.innerHTML = `${gammaAvg + gammaDiff}`;
+}
+
+function calibrateGyro() {
+  console.log('calibrating cube!');
+  alphaDiff = 0 - alphaAvg;
+  betaDiff = 0 - betaAvg;
+  gammaDiff = 0 - gammaAvg;
 }
 
 // Set interval to re-render chart
-setInterval(addData, 30);
+setInterval(addData, 40);
+
+cube.addEventListener('click', calibrateGyro);
