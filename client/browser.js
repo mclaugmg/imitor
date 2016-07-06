@@ -4,32 +4,47 @@ document.getElementById('nonce-container').innerHTML = `Mobile code: <span>${imp
 // Use roomId from cookies to create a room
 imperio.desktopRoomSetup(imperio.socket, imperio.room);
 
-let alphaAvg = 0;
-let betaAvg = 0;
-let gammaAvg = 0;
 let alphaDiff = 0;
 let betaDiff = 0;
 let gammaDiff = 0;
 
-let alphaDataArray = [0, 0, 0];
-let betaDataArray = [0, 0, 0];
-let gammaDataArray = [0, 0, 0];
+function initializeArray(length) {
+  let newArray = [];
+  for (let i = 0; i < length; i++) {
+    newArray.push(0);
+  }
+  return newArray;
+}
+
+const runningDataSize = 3;
+let alphaDataArray = initializeArray(runningDataSize);
+let betaDataArray = initializeArray(runningDataSize);
+let gammaDataArray = initializeArray(runningDataSize);
+let gyroscopeDataStore = [alphaDataArray, betaDataArray, gammaDataArray];
+let gyroscopeAverages = initializeArray(3);
+
+function runningAverage(newData, dataArray) {
+  const length = dataArray.length;
+  dataArray.shift;
+  dataArray.push(newData);
+  return (dataArray.reduce((a, b) => {return a + b;})) / length;
+}
 
 // Running average function stacks most recent acceleration points and calcs avg
-function calculateRunningAverage(gyroscopeDataObject) {
-  alphaDataArray.shift();
-  alphaDataArray.push(gyroscopeDataObject.alpha);
-  alphaAvg = Math.round(alphaDataArray.reduce((a, b) => {return a + b; }) / 3);
-  betaDataArray.shift();
-  betaDataArray.push(gyroscopeDataObject.beta);
-  betaAvg = Math.round(betaDataArray.reduce((a, b) => {return a + b; }) / 3);
-  gammaDataArray.shift();
-  gammaDataArray.push(gyroscopeDataObject.gamma);
-  gammaAvg = Math.round(gammaDataArray.reduce((a, b) => {return a + b; }) / 3);
+function calculateRunningAverages(dataObject, dataArray) {
+  let i = 0;
+  for(let key in dataObject) {
+    gyroscopeAverages[i] = runningAverage(dataObject[key], dataArray[i]);
+    i++;
+  }
+}
+
+function gyroAverages(gyroDataObject) {
+  calculateRunningAverages(gyroDataObject, gyroscopeDataStore);
 }
 
 // Instantiate gyroscope handler
-imperio.desktopGyroHandler(imperio.socket, calculateRunningAverage);
+imperio.desktopGyroHandler(imperio.socket, gyroAverages);
 
 const alphaElement = document.getElementById('alpha-angle');
 const betaElement = document.getElementById('beta-angle');
@@ -39,20 +54,20 @@ const cube = document.getElementById('cube');
 
 // Removes and adds one data point to each dataset in the chart
 function addData() {
+  let alphaAvg = gyroscopeAverages[0], betaAvg = gyroscopeAverages[1], gammaAvg = gyroscopeAverages[2];
   cube.style.transform = `translateZ(-100px) rotateX(${gammaAvg + gammaDiff}deg) rotateY(${alphaAvg + alphaDiff}deg) rotateZ(${betaAvg + betaDiff}deg)`;
   alphaElement.innerHTML = `${alphaAvg + alphaDiff}`;
   betaElement.innerHTML = `${betaAvg + betaDiff}`;
   gammaElement.innerHTML = `${gammaAvg + gammaDiff}`;
 }
 
-function calibrateGyro() {
-  console.log('calibrating cube!');
-  alphaDiff = 0 - alphaAvg;
-  betaDiff = 0 - betaAvg;
-  gammaDiff = 0 - gammaAvg;
-}
-
 // Set interval to re-render chart
-setInterval(addData, 40);
+setInterval(addData, 33);
+
+function calibrateGyro() {
+  alphaDiff = 0 - gyroscopeAverages[0];
+  betaDiff = 0 - gyroscopeAverages[1];
+  gammaDiff = 0 - gyroscopeAverages[2];
+}
 
 cube.addEventListener('click', calibrateGyro);
