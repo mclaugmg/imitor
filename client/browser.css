@@ -16,7 +16,7 @@ h1 {
   width: 200px;
   height: 200px;
   position: relative;
-  perspective: 1000px;
+  perspective: 500px;
   margin-left: auto;
   margin-right:auto;
 }
@@ -27,7 +27,7 @@ h1 {
   position: absolute;
   transform-style: preserve-3d;
   transform: translateZ( -100px );
-  transition: transform 1s;
+  transition: transform 0s;
 }
 
 #cube figure {
