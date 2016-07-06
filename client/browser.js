@@ -28,7 +28,7 @@ function calculateRunningAverage(gyroscopeDataObject) {
   gammaAvg = Math.round(gammaDataArray.reduce((a, b) => {return a + b; }) / 3);
 }
 
-// Instantiate acceleration handler
+// Instantiate gyroscope handler
 imperio.desktopGyroHandler(imperio.socket, calculateRunningAverage);
 
 const alphaElement = document.getElementById('alpha-angle');
@@ -40,7 +40,6 @@ const cube = document.getElementById('cube');
 // Removes and adds one data point to each dataset in the chart
 function addData() {
   cube.style.transform = `translateZ(-100px) rotateX(${gammaAvg + gammaDiff}deg) rotateY(${alphaAvg + alphaDiff}deg) rotateZ(${betaAvg + betaDiff}deg)`;
-  // $('#cube').css('transform', `translateZ(-100px) rotateZ(${counter}deg)`);
   alphaElement.innerHTML = `${alphaAvg + alphaDiff}`;
   betaElement.innerHTML = `${betaAvg + betaDiff}`;
   gammaElement.innerHTML = `${gammaAvg + gammaDiff}`;
