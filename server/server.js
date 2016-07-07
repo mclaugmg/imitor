@@ -3,8 +3,9 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app); // eslint-disable-line
 const path = require('path');
-const imperio = require('imperio')(server);
+const imperio = require('./../../imperio/index.js')(server);
 
+app.use(express.static(path.join(`${__dirname}/../../imperio`)));
 app.use(express.static(path.join(`${__dirname}/../client`)));
 app.set('view engine', 'ejs');
 app.use(imperio.init());

@@ -25,7 +25,7 @@ let gyroscopeAverages = initializeArray(3);
 
 function runningAverage(newData, dataArray) {
   const length = dataArray.length;
-  dataArray.shift;
+  dataArray.shift();
   dataArray.push(newData);
   return (dataArray.reduce((a, b) => {return a + b;})) / length;
 }
