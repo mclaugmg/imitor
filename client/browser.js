@@ -39,12 +39,29 @@ function calculateRunningAverages(dataObject, dataArray) {
   }
 }
 
-function gyroAverages(gyroDataObject) {
+const timeTable = document.getElementById('time-table');
+
+function handleDates(emitDate, serverDate, listenDate) {
+  const emitToServer = serverDate - emitDate;
+  const serverToListen = listenDate - serverDate;
+  const tripTime = emitToServer + serverToListen;
+  const row = timeTable.insertRow(-1);
+  const cell1 = row.insertCell(0);
+  const cell2 = row.insertCell(1);
+  const cell3 = row.insertCell(2);
+  cell1.innerHTML = emitToServer;
+  cell2.innerHTML = serverToListen;  
+  cell3.innerHTML = tripTime;
+}
+
+function gyroFunctions(gyroDataObject, emitDate, serverDate) {
+  let listenDate = Date.now();
   calculateRunningAverages(gyroDataObject, gyroscopeDataStore);
+  handleDates(emitDate, serverDate, listenDate);
 }
 
 // Instantiate gyroscope handler
-imperio.desktopGyroHandler(imperio.socket, gyroAverages);
+imperio.desktopGyroTimer(imperio.socket, gyroFunctions);
 
 const alphaElement = document.getElementById('alpha-angle');
 const betaElement = document.getElementById('beta-angle');

@@ -20,7 +20,7 @@ var h3Element = document.querySelector('h3');
 imperio.mobileRoomSetup(imperio.socket, imperio.room, showRoomName);
 
 // handle gyro using our library
-imperio.mobileGyroShare(imperio.socket, imperio.room, printGyroscopeData);
+imperio.mobileGyroTimer(imperio.socket, imperio.room, printGyroscopeData);
 
 function printGyroscopeData(gyroObj) {
   h3Element.innerHTML = `alpha is ${gyroObj.alpha},
